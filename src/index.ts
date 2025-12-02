@@ -7,7 +7,7 @@ const baseRes = {
   msg: "This is the mock data response.",
 };
 
-const app = new Elysia().use(cors({ origin: process.env.CROS_ORIGIN }));
+const app = new Elysia().use(cors({ origin: process.env.CORS_ORIGIN }));
 
 mockApis.forEach((api) => {
   (app as any)[api.method](api.path, async () => {

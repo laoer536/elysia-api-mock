@@ -1,28 +1,26 @@
 # Elysia API 模拟服务器
 
+![Bun](https://img.shields.io/badge/Bun-%23000000.svg?style=for-the-badge&logo=bun&logoColor=white)
+![Elysia](https://img.shields.io/badge/Elysia-JS-23c4e7?style=for-the-badge)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+
 [English Document](./README.md) | [GitHub 地址](https://github.com/laoer536/elysia-api-mock)
 
-一个使用 Bun 和 Elysia 构建的轻量级 API 模拟服务器，用于前端开发期间的数据模拟。
-
-## 技术栈
-
-- [Bun](https://bun.sh/) - JavaScript/TypeScript 运行时
-- [Elysia](https://elysiajs.com/) - 基于 Bun 构建的快速、灵活的 Web 框架
-- TypeScript - 提供类型安全
+一个基于 **Bun** 和 **Elysia** 构建的轻量级 API 模拟服务器，专为前端开发设计，提供简单灵活的数据模拟方案。
 
 ## 功能特性
 
-- 快速设置和运行 API 模拟服务
-- 支持所有 HTTP 方法（GET、POST、PUT、PATCH、DELETE）
-- CORS 支持（可通过环境变量配置）
-- 简单易用的数据配置方式
-- 热重载开发模式
+- 🚀 **快速启动**: 秒级启动 API 模拟服务。
+- 🔄 **全方法支持**: 支持 GET, POST, PUT, PATCH, DELETE 等所有 HTTP 方法。
+- 🌐 **CORS 支持**: 可配置跨域资源共享，轻松对接前端应用。
+- 📝 **配置简单**: 使用 TypeScript 文件定义接口和数据，类型安全且易于维护。
+- 🔥 **热重载**: 开发过程中修改配置即时生效，无需重启。
 
 ## 快速开始
 
-### 先决条件
+### 环境准备
 
-确保已安装 [Bun](https://bun.sh/docs/installation)：
+确保您已安装 [Bun](https://bun.sh/docs/installation)：
 
 ```bash
 curl -fsSL https://bun.sh/install | bash
@@ -34,34 +32,34 @@ curl -fsSL https://bun.sh/install | bash
 bun install
 ```
 
-### 启动开发服务器
+### 启动服务
 
 ```bash
 bun run dev
 ```
 
-服务器将在 `http://localhost:2025` 上运行，并支持热重载。
+服务将在 `http://localhost:2025` 启动，并开启热重载功能。
 
-## 配置 API 模拟数据
+## 配置指南
 
-通常您只需要关注两个文件：
-- [src/mock-apis.ts](./src/mock-apis.ts) - 定义 API 端点信息
-- [src/api-data.ts](./src/api-data.ts) - 定义 API 对应的模拟数据
+### 定义 API 接口
 
-API 会根据这些文件中的配置自动注册。
+在 [src/mock-apis.ts](./src/mock-apis.ts) 中定义您的 API 路由信息：
 
-在 [mock-apis.ts](./src/mock-apis.ts) 中定义 API 端点信息：
 ```typescript
 export const mockApis: APIItem[] = [
   {
     method: "get",
     path: "/user/:userId",
-    data: mock1, // 引用 api-data.ts 中定义的模拟数据
+    data: mock1, // 引用 api-data.ts 中的数据
   },
 ];
 ```
 
-在 [api-data.ts](./src/api-data.ts) 中定义对应的模拟数据：
+### 定义模拟数据
+
+在 [src/api-data.ts](./src/api-data.ts) 中定义具体的模拟数据内容：
+
 ```typescript
 export const mock1 = {
   name: "neo_liu",
@@ -71,140 +69,65 @@ export const mock1 = {
 };
 ```
 
-## CORS 配置
+### CORS 跨域配置
 
-默认情况下，CORS 已启用。可以通过设置 `CROS_ORIGIN` 环境变量来自定义允许的源。
+默认情况下 CORS 已启用。您可以通过环境变量 `CORS_ORIGIN` 自定义允许的源。
 
-我们推荐使用 `.env` 或 `.env.local` 文件来配置环境变量：
+推荐在 `.env` 或 `.env.local` 文件中配置：
 
+```env
+CORS_ORIGIN=https://yourdomain.com
 ```
-CROS_ORIGIN=https://yourdomain.com
-```
 
-启动开发服务器：
+或者在启动时直接设置：
 
 ```bash
-bun run dev
-```
-
-或者在 shell 中直接设置环境变量：
-
-```bash
-export CROS_ORIGIN=https://yourdomain.com
-bun run dev
+CORS_ORIGIN=https://yourdomain.com bun run dev
 ```
 
 ## 跨域解决方案
 
-为了解决开发过程中的跨域问题，可以使用浏览器插件如 XSwitch 或 Proxy SwitchyOmega 将请求代理到本地模拟服务器。
+在开发过程中，如果您不想修改前端代码来指向 mock 服务器，可以使用浏览器插件（如 **XSwitch** 或 **Proxy SwitchyOmega**）将特定请求代理到本地。
 
 ### 使用 XSwitch 插件
 
-1. 在浏览器中安装 XSwitch 插件
-2. 配置规则将 API 请求代理到 `http://localhost:2025`
-3. 在开发过程中启用该规则
+1.  安装 XSwitch 插件。
+2.  添加规则，将目标 API 请求代理到 `http://localhost:2025`。
 
-XSwitch 配置示例：
+**配置示例：**
 
-#### 基础配置
 ```json
 {
   "proxy": [
     {
-      "match": "https://your-api-domain.com/mock/*",
+      "match": "https://api.yourdomain.com/mock/(.*)",
       "action": "redirect",
       "url": "http://localhost:2025/$1"
     }
   ]
 }
 ```
-
-#### 正则表达式匹配
-```json
-{
-  "proxy": [
-    {
-      "match": "https://your-api-domain.com/mock/api/(.*)",
-      "action": "redirect",
-      "url": "http://localhost:2025/$1"
-    }
-  ]
-}
-```
-
-#### 多个 API 端点
-```json
-{
-  "proxy": [
-    {
-      "match": "https://your-api-domain.com/mock/user/(.*)",
-      "action": "redirect",
-      "url": "http://localhost:2025/user/$1"
-    },
-    {
-      "match": "https://your-api-domain.com/mock/products/(.*)",
-      "action": "redirect",
-      "url": "http://localhost:2025/products/$1"
-    }
-  ]
-}
-```
-
-#### 带参数的高级正则表达式
-```json
-{
-  "proxy": [
-    {
-      "match": "https://your-api-domain.com/mock/(v\\d+)/(.*)",
-      "action": "redirect",
-      "url": "http://localhost:2025/$2?version=$1"
-    }
-  ]
-}
-```
-
-#### Axios 请求示例
-
-使用上述 XSwitch 配置，您可以使用 axios 发送如下请求：
-
-```javascript
-// 基础请求
-const userData = await axios.get('/mock/user/123456');
-
-// 带参数的请求
-const productData = await axios.get('/mock/products/789');
-
-// 带版本号的请求
-const versionedData = await axios.get('/mock/v1/users/list');
-
-// POST 请求示例
-const newUser = await axios.post('/mock/user', {
-  name: 'John Doe',
-  age: 30
-});
-```
-
-当使用上述配置的 XSwitch 插件时，这些请求会自动代理到本地模拟服务器 `http://localhost:2025`。
 
 ## 项目结构
 
 ```
 src/
-├── index.ts         # 应用入口点
+├── index.ts         # 应用入口文件
 ├── mock-apis.ts     # API 路由配置
-├── api-data.ts      # 模拟数据定义
+├── api-data.ts      # 模拟数据源
 └── types.ts         # TypeScript 类型定义
 ```
 
-## 使用示例
+## 调用示例
 
-启动服务器后，你可以通过以下方式访问模拟 API：
+启动服务后，使用 curl 测试接口：
 
 ```bash
 curl http://localhost:2025/user/123456
 ```
 
-响应数据：
+**响应结果：**
+
 ```json
 {
   "code": "SUCCESS",
@@ -217,7 +140,3 @@ curl http://localhost:2025/user/123456
   }
 }
 ```
-
-## 许可证
-
-[MIT](LICENSE)
