@@ -1,6 +1,6 @@
 import { Elysia } from "elysia";
 import { cors } from "@elysiajs/cors";
-import { mockApis } from "./mock-data";
+import { mockApis } from "./mock-apis.ts";
 
 const baseRes = {
   code: "SUCCESS",

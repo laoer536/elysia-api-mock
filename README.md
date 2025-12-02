@@ -44,26 +44,32 @@ The server will run on `http://localhost:2025` with hot reloading enabled.
 
 ## Configure API Mock Data
 
-1. Define your mock data in [api-data.ts](./src/api-data.ts):
-   ```typescript
-   export const mock1 = {
-     name: "neo_liu",
-     age: 18,
-     desc: "hello world",
-     userId: "123456",
-   };
-   ```
+You typically only need to focus on two files:
+- [src/mock-apis.ts](./src/mock-apis.ts) - Define API endpoint information
+- [src/api-data.ts](./src/api-data.ts) - Define mock data for the APIs
 
-2. Configure API routes in [mock-data.ts](./src/mock-data.ts):
-   ```typescript
-   export const mockApis: APIItem[] = [
-     {
-       method: "get",
-       path: "/user/:userId",
-       data: mock1,
-     },
-   ];
-   ```
+APIs are automatically registered based on the configurations in these files.
+
+In [mock-apis.ts](./src/mock-apis.ts), define the API endpoint information:
+```typescript
+export const mockApis: APIItem[] = [
+  {
+    method: "get",
+    path: "/user/:userId",
+    data: mock1, // Reference to mock data defined in api-data.ts
+  },
+];
+```
+
+In [api-data.ts](./src/api-data.ts), define the corresponding mock data:
+```typescript
+export const mock1 = {
+  name: "neo_liu",
+  age: 18,
+  desc: "hello world",
+  userId: "123456",
+};
+```
 
 ## CORS Configuration
 
@@ -185,7 +191,7 @@ These requests will be automatically proxied to your local mock server at `http:
 ```
 src/
 ├── index.ts         # Application entry point
-├── mock-data.ts     # API route configuration
+├── mock-apis.ts     # API route configuration
 ├── api-data.ts      # Mock data definition
 └── types.ts         # TypeScript type definitions
 ```
@@ -211,3 +217,7 @@ Response data:
   }
 }
 ```
+
+## License
+
+[MIT](LICENSE)

@@ -44,26 +44,32 @@ bun run dev
 
 ## 配置 API 模拟数据
 
-1. 在 [api-data.ts](./src/api-data.ts) 文件中定义你的模拟数据：
-   ```typescript
-   export const mock1 = {
-     name: "neo_liu",
-     age: 18,
-     desc: "hello world",
-     userId: "123456",
-   };
-   ```
+通常您只需要关注两个文件：
+- [src/mock-apis.ts](./src/mock-apis.ts) - 定义 API 端点信息
+- [src/api-data.ts](./src/api-data.ts) - 定义 API 对应的模拟数据
 
-2. 在 [mock-data.ts](./src/mock-data.ts) 文件中配置 API 路由：
-   ```typescript
-   export const mockApis: APIItem[] = [
-     {
-       method: "get",
-       path: "/user/:userId",
-       data: mock1,
-     },
-   ];
-   ```
+API 会根据这些文件中的配置自动注册。
+
+在 [mock-apis.ts](./src/mock-apis.ts) 中定义 API 端点信息：
+```typescript
+export const mockApis: APIItem[] = [
+  {
+    method: "get",
+    path: "/user/:userId",
+    data: mock1, // 引用 api-data.ts 中定义的模拟数据
+  },
+];
+```
+
+在 [api-data.ts](./src/api-data.ts) 中定义对应的模拟数据：
+```typescript
+export const mock1 = {
+  name: "neo_liu",
+  age: 18,
+  desc: "hello world",
+  userId: "123456",
+};
+```
 
 ## CORS 配置
 
@@ -185,7 +191,7 @@ const newUser = await axios.post('/mock/user', {
 ```
 src/
 ├── index.ts         # 应用入口点
-├── mock-data.ts     # API 路由配置
+├── mock-apis.ts     # API 路由配置
 ├── api-data.ts      # 模拟数据定义
 └── types.ts         # TypeScript 类型定义
 ```
@@ -211,3 +217,7 @@ curl http://localhost:2025/user/123456
   }
 }
 ```
+
+## 许可证
+
+[MIT](LICENSE)
