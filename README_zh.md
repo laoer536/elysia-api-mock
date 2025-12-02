@@ -1,4 +1,4 @@
-# Elysia API 模拟服务器
+# Elysia API 接口数据模拟服务器
 
 ![Bun](https://img.shields.io/badge/Bun-%23000000.svg?style=for-the-badge&logo=bun&logoColor=white)
 ![Elysia](https://img.shields.io/badge/Elysia-JS-23c4e7?style=for-the-badge)
