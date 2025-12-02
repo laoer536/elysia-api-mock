@@ -67,13 +67,21 @@ bun run dev
 
 ## CORS 配置
 
-默认情况下，CORS 已启用。可以通过设置 `CROS_ORIGIN` 环境变量来自定义允许的源：
+默认情况下，CORS 已启用。可以通过设置 `CROS_ORIGIN` 环境变量来自定义允许的源。
 
-```bash
-CROS_ORIGIN=https://yourdomain.com bun run dev
+我们推荐使用 `.env` 或 `.env.local` 文件来配置环境变量：
+
+```
+CROS_ORIGIN=https://yourdomain.com
 ```
 
-或者在 shell 中设置：
+启动开发服务器：
+
+```bash
+bun run dev
+```
+
+或者在 shell 中直接设置环境变量：
 
 ```bash
 export CROS_ORIGIN=https://yourdomain.com
@@ -91,17 +99,86 @@ bun run dev
 3. 在开发过程中启用该规则
 
 XSwitch 配置示例：
+
+#### 基础配置
 ```json
 {
   "proxy": [
     {
-      "match": "https://your-api-domain.com/*",
+      "match": "https://your-api-domain.com/mock/*",
       "action": "redirect",
       "url": "http://localhost:2025/$1"
     }
   ]
 }
 ```
+
+#### 正则表达式匹配
+```json
+{
+  "proxy": [
+    {
+      "match": "https://your-api-domain.com/mock/api/(.*)",
+      "action": "redirect",
+      "url": "http://localhost:2025/$1"
+    }
+  ]
+}
+```
+
+#### 多个 API 端点
+```json
+{
+  "proxy": [
+    {
+      "match": "https://your-api-domain.com/mock/user/(.*)",
+      "action": "redirect",
+      "url": "http://localhost:2025/user/$1"
+    },
+    {
+      "match": "https://your-api-domain.com/mock/products/(.*)",
+      "action": "redirect",
+      "url": "http://localhost:2025/products/$1"
+    }
+  ]
+}
+```
+
+#### 带参数的高级正则表达式
+```json
+{
+  "proxy": [
+    {
+      "match": "https://your-api-domain.com/mock/(v\\d+)/(.*)",
+      "action": "redirect",
+      "url": "http://localhost:2025/$2?version=$1"
+    }
+  ]
+}
+```
+
+#### Axios 请求示例
+
+使用上述 XSwitch 配置，您可以使用 axios 发送如下请求：
+
+```javascript
+// 基础请求
+const userData = await axios.get('/mock/user/123456');
+
+// 带参数的请求
+const productData = await axios.get('/mock/products/789');
+
+// 带版本号的请求
+const versionedData = await axios.get('/mock/v1/users/list');
+
+// POST 请求示例
+const newUser = await axios.post('/mock/user', {
+  name: 'John Doe',
+  age: 30
+});
+```
+
+当使用上述配置的 XSwitch 插件时，这些请求会自动代理到本地模拟服务器 `http://localhost:2025`。
 
 ## 项目结构
 
@@ -134,7 +211,3 @@ curl http://localhost:2025/user/123456
   }
 }
 ```
-
-## 许可证
-
-[MIT](LICENSE)

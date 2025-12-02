@@ -67,13 +67,21 @@ The server will run on `http://localhost:2025` with hot reloading enabled.
 
 ## CORS Configuration
 
-CORS is enabled by default. You can customize the allowed origins by setting the `CROS_ORIGIN` environment variable:
+CORS is enabled by default. You can customize the allowed origins by setting the `CROS_ORIGIN` environment variable.
 
-```bash
-CROS_ORIGIN=https://yourdomain.com bun run dev
+We recommend configuring environment variables using a `.env` or `.env.local` file:
+
+```
+CROS_ORIGIN=https://yourdomain.com
 ```
 
-Alternatively, you can set it in your shell:
+Start the development server with:
+
+```bash
+bun run dev
+```
+
+Alternatively, you can set the environment variable directly in your shell:
 
 ```bash
 export CROS_ORIGIN=https://yourdomain.com
@@ -90,18 +98,87 @@ To solve cross-origin issues during development, you can use browser extensions 
 2. Configure a rule to proxy your API requests to `http://localhost:2025`
 3. Enable the rule during development
 
-Example XSwitch configuration:
+Example XSwitch configurations:
+
+#### Basic Configuration
 ```json
 {
   "proxy": [
     {
-      "match": "https://your-api-domain.com/*",
+      "match": "https://your-api-domain.com/mock/*",
       "action": "redirect",
       "url": "http://localhost:2025/$1"
     }
   ]
 }
 ```
+
+#### Regex Pattern Matching
+```json
+{
+  "proxy": [
+    {
+      "match": "https://your-api-domain.com/mock/api/(.*)",
+      "action": "redirect",
+      "url": "http://localhost:2025/$1"
+    }
+  ]
+}
+```
+
+#### Multiple API Endpoints
+```json
+{
+  "proxy": [
+    {
+      "match": "https://your-api-domain.com/mock/user/(.*)",
+      "action": "redirect",
+      "url": "http://localhost:2025/user/$1"
+    },
+    {
+      "match": "https://your-api-domain.com/mock/products/(.*)",
+      "action": "redirect",
+      "url": "http://localhost:2025/products/$1"
+    }
+  ]
+}
+```
+
+#### Advanced Regex with Parameters
+```json
+{
+  "proxy": [
+    {
+      "match": "https://your-api-domain.com/mock/(v\\d+)/(.*)",
+      "action": "redirect",
+      "url": "http://localhost:2025/$2?version=$1"
+    }
+  ]
+}
+```
+
+#### Axios Request Examples
+
+With the XSwitch configurations above, you can make requests using axios like this:
+
+```javascript
+// Basic request
+const userData = await axios.get('/mock/user/123456');
+
+// Request with parameters
+const productData = await axios.get('/mock/products/789');
+
+// Request with versioning
+const versionedData = await axios.get('/mock/v1/users/list');
+
+// POST request example
+const newUser = await axios.post('/mock/user', {
+  name: 'John Doe',
+  age: 30
+});
+```
+
+These requests will be automatically proxied to your local mock server at `http://localhost:2025` when using the XSwitch plugin with the configurations above.
 
 ## Project Structure
 
@@ -134,7 +211,3 @@ Response data:
   }
 }
 ```
-
-## License
-
-[MIT](LICENSE)
