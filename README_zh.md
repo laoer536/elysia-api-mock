@@ -44,21 +44,21 @@ bun run dev
 
 ### 定义 API 接口
 
-在 [src/mock-apis.ts](./src/mock-apis.ts) 中定义您的 API 路由信息：
+在 [src/mock/apis.ts](src/mock/apis.ts) 中定义您的 API 路由信息：
 
 ```typescript
-export const mockApis: APIItem[] = [
+export const apis: APIItem[] = [
   {
     method: "get",
     path: "/user/:userId",
-    data: mock1, // 引用 api-data.ts 中的数据
+    data: mock1, // 引用 data.ts 中的数据
   },
 ];
 ```
 
 ### 定义模拟数据
 
-在 [src/api-data.ts](./src/api-data.ts) 中定义具体的模拟数据内容：
+在 [src/mock/data.ts](src/mock/data.ts) 中定义具体的模拟数据内容：
 
 ```typescript
 export const mock1 = {
@@ -113,8 +113,9 @@ CORS_ORIGIN=https://yourdomain.com bun run dev
 ```
 src/
 ├── index.ts         # 应用入口文件
-├── mock-apis.ts     # API 路由配置
-├── api-data.ts      # 模拟数据源
+├── mock/
+│   ├── apis.ts      # API 路由配置
+│   └── data.ts      # 模拟数据源
 └── types.ts         # TypeScript 类型定义
 ```
 

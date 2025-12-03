@@ -48,21 +48,21 @@ The server will start at `http://localhost:2025` with hot reloading enabled.
 
 ### API Definitions
 
-Define your API endpoints in [src/mock-apis.ts](./src/mock-apis.ts):
+Define your API endpoints in [src/mock/apis.ts](src/mock/apis.ts):
 
 ```typescript
-export const mockApis: APIItem[] = [
+export const apis: APIItem[] = [
   {
     method: "get",
     path: "/user/:userId",
-    data: mock1, // Reference to data in api-data.ts
+    data: mock1, // Reference to data in data.ts
   },
 ];
 ```
 
 ### Mock Data
 
-Define your mock data in [src/api-data.ts](./src/api-data.ts):
+Define your mock data in [src/mock/data.ts](src/mock/data.ts):
 
 ```typescript
 export const mock1 = {
@@ -118,8 +118,9 @@ This will redirect requests from `https://api.example.com/mock/*` to your local 
 ```
 src/
 ├── index.ts         # Server entry point
-├── mock-apis.ts     # API route definitions
-├── api-data.ts      # Mock data storage
+├── mock/
+│   ├── apis.ts      # API route definitions
+│   └── data.ts      # Mock data storage
 └── types.ts         # TypeScript interfaces
 ```
 

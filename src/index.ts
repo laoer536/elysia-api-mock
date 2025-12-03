@@ -1,17 +1,17 @@
 import { Elysia } from "elysia";
 import { cors } from "@elysiajs/cors";
-import { mockApis } from "./mock-apis.ts";
+import { apis } from "./mock/apis.ts";
 
-const baseRes = {
+const BASE_RES = {
   code: "SUCCESS",
   msg: "This is the mock data response.",
 };
 
 const app = new Elysia().use(cors({ origin: process.env.CORS_ORIGIN }));
 
-mockApis.forEach((api) => {
+apis.forEach((api) => {
   (app as any)[api.method](api.path, async () => {
-    return { ...baseRes, data: api.data };
+    return { ...BASE_RES, data: api.data };
   });
 });
 
